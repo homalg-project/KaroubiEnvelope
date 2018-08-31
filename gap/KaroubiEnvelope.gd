@@ -97,6 +97,30 @@ DeclareProperty( "IsFullObject",
 ##
 ####################################
 
+#! @Description
+#! The argument is an idempotent $e:a\rightarrow a$ of the Karoubi envelope $\mathbf{K(A)}$.
+#! The output is the universal objet that split $e$
+#! @Returns an object in $\mathbf{K(A)}$
+#! @Arguments e
+DeclareOperation( "UniversalSplitObject",
+                  [ IsKaroubiMorphism ] );
+
+#! @Description
+#! The argument is an idempotent $e:a\rightarrow a$ of the Karoubi envelope $\mathbf{K(A)}$.
+#! TODO
+#! @Returns an morphism in $\mathbf{K(A)}$
+#! @Arguments e
+DeclareOperation( "UniversalMorphismIntoSplit",
+                  [ IsKaroubiMorphism ] );
+
+#! @Description
+#! The argument is an idempotent $e:a\rightarrow a$ of the Karoubi envelope $\mathbf{K(A)}$.
+#! TODO
+#! @Returns an object in $\mathbf{K(A)}$
+#! @Arguments e
+DeclareOperation( "UniversalMorphismFromSplit",
+                  [ IsKaroubiMorphism ] );
+
 
 ####################################
 ##

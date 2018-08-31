@@ -5,15 +5,21 @@ Q := HomalgFieldOfRationals();
 
 underlying_category := MatrixCategory( Q );
 
-kar := KaroubiEnvelope(underlying_category);
+kar := KaroubiEnvelope( underlying_category );
 
 
 V := VectorSpaceObject( 2, Q );
 
 endo := VectorSpaceMorphism( V, HomalgMatrix( [ [ 0, 1 ], [ 1, 0 ] ], 2, 2, Q ), V );
 
+# not valid because endo is not an idempotent
 Vendo := KaroubiObject( endo );
+IsWellDefinedForObjects(Vendo);
+# false
 
-Mor := KaroubiMorphism(Vendo, endo, Vendo);
+e := VectorSpaceMorphism(V, HomalgMatrix( [[1, 1], [0, 0]], 2, 2, Q), V);
+f := VectorSpaceMorphism(V, HomalgMatrix( [[0, 0], [1, 1]], 2, 2, Q), V);
 
-Display(Idempotent(Vendo));
+eA := KaroubiObject(e);
+fA := KaroubiObject(f);
+
