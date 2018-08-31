@@ -179,7 +179,38 @@ InstallMethod( KaroubiEnvelope,
 	       IsIdempotent( idem );
         
     end );
-    
+
+    AddIdentityMorphism( karoubi_envelope,
+        function (obj)
+	return KaroubiMorphism(obj, Idempotent(obj), obj);
+    end);
+
+    if HasIsAdditiveCategory(category) and IsAdditiveCategory(category) then
+        AddKernelEmbedding( karoubi_envelope,
+	    function (mor)
+	    local e, ker, f, h;
+	    f := UnderlyingMorphism(mor);
+	    h := KernelEmbedding(f);
+	    ker := KaroubiObject(IdentityMorphism(KernelObject(f)));
+	    e := Idempotent(Source(mor));
+	    return KaroubiMorphism(ker, PreCompose(h, e), Source(mor));
+	end);
+
+
+        AddKernelLift( karoubi_envelope,
+	    function (mor, tmor)
+	    local e, q, f, k, ker, phi;
+	    phi := UnderlyingMorphism(mor);
+	    f := UnderlyingMorphism(tmor);
+	    e := Idempotent(Source(mor));
+	    q := Idempotent(Source(tmor));
+	    k := KernelEmbedding(phi);
+	    ker := KaroubiObject(IdentityMorphism(Source(k)));
+	    return KaroubiMorphism(Source(tmor), PreCompose(k, q), ker);
+	end);
+
+    fi;
+
     AddIsWellDefinedForMorphisms( karoubi_envelope,
         function( mor )
 	local e, f, p;
@@ -206,11 +237,6 @@ InstallMethod( KaroubiEnvelope,
     AddIsCongruentForMorphisms( karoubi_envelope,
         function (m1, m2)
 	return IsCongruentForMorphisms( UnderlyingCell(m1), UnderlyingCell(m2));
-    end);
-
-    AddIdentityMorphism( karoubi_envelope,
-        function (obj)
-	return KaroubiMorphism(obj, Idempotent(obj), obj);
     end);
 
     Finalize( karoubi_envelope );
