@@ -25,3 +25,6 @@ eA := KaroubiObject(e);
 fA := KaroubiObject(f);
 phi := KaroubiMorphism(eA, PreCompose(f, e), fA);
 
+a := ListPrimitivelyInstalledOperationsOfCategory( CapCategory( V ) );;
+b := ListInstalledOperationsOfCategory( CapCategory( phi ) );;
+Display(Difference( a, b ));

@@ -142,21 +142,11 @@ InstallMethod( KaroubiEnvelope,
     structure_record.object_type := TheTypeOfKaroubiObjects;
     structure_record.morphism_type := TheTypeOfKaroubiMorphisms;
 
-    category_weight_list := category!.derivations_weight_list;
-
-    if CurrentOperationWeight(category_weight_list, "ZeroObject") < infinity then
-       zero_object := ZeroObject ( category );
-
-       structure_record.ZeroObject :=
-           function( underlying_zero_object )
-	   return [ ZeroMorphism( underlying_zero_object, underlying_zero_object ) ];
-      end;
-    fi;
-
     triple := EnhancementWithAttributes( structure_record );
     obj_const := triple[2];
     mor_const := triple[3];
 
+    ##
     InstallMethod( KaroubiObject,
     		   [ IsCapCategoryMorphism ],
         function (idempotent)
@@ -169,6 +159,7 @@ InstallMethod( KaroubiEnvelope,
 	return mor_const(a, f, b);
     end);
 
+    ##
     AddIsWellDefinedForObjects( karoubi_envelope,
         function( object )
 	local idem;
@@ -180,12 +171,51 @@ InstallMethod( KaroubiEnvelope,
         
     end );
 
+    AddIsWellDefinedForMorphisms( karoubi_envelope,
+        function( mor )
+	local e, f, p;
+	e := Idempotent(Source(mor));
+	f := Idempotent(Range(mor));
+	p := UnderlyingCell(mor);
+        
+        return IsWellDefinedForMorphisms( UnderlyingCell(mor) ) and
+	       IsCongruentForMorphisms( p, PreCompose(f, PreCompose(p, e)));
+    end );
+
+    ##
+    AddIsEqualForObjects( karoubi_envelope,
+        function( obj_1, obj_2 )
+        return IsEqualForMorphisms( Idempotent(obj_1), Idempotent(obj_2) );
+    end );
+
+    AddIsEqualForMorphisms( karoubi_envelope,
+        function( morphism_1, morphism_2 )
+        return IsEqualForMorphisms( UnderlyingCell( morphism_1 ), UnderlyingCell( morphism_2 ) );
+    end );
+
+    AddIsCongruentForMorphisms( karoubi_envelope,
+        function (m1, m2)
+	return IsCongruentForMorphisms( UnderlyingCell(m1), UnderlyingCell(m2));
+    end);
+
+    ##
     AddIdentityMorphism( karoubi_envelope,
         function (obj)
 	return KaroubiMorphism(obj, Idempotent(obj), obj);
     end);
 
-    if HasIsAdditiveCategory(category) and IsAdditiveCategory(category) then
+    category_weight_list := category!.derivations_weight_list;
+
+    if CurrentOperationWeight(category_weight_list, "ZeroObject") < infinity then
+       zero_object := ZeroObject ( category );
+
+       structure_record.ZeroObject :=
+           function( underlying_zero_object )
+	   return [ ZeroMorphism( underlying_zero_object, underlying_zero_object ) ];
+      end;
+    fi;
+
+    if CurrentOperationWeight(category_weight_list, "KernelObject") < infinity then
         AddKernelEmbedding( karoubi_envelope,
 	    function (mor)
 	    local e, ker, f, h;
@@ -208,36 +238,14 @@ InstallMethod( KaroubiEnvelope,
 	    ker := KaroubiObject(IdentityMorphism(Source(k)));
 	    return KaroubiMorphism(Source(tmor), PreCompose(k, q), ker);
 	end);
-
     fi;
 
-    AddIsWellDefinedForMorphisms( karoubi_envelope,
-        function( mor )
-	local e, f, p;
-	e := Idempotent(Source(mor));
-	f := Idempotent(Range(mor));
-	p := UnderlyingCell(mor);
-        
-        return IsWellDefinedForMorphisms( UnderlyingCell(mor) ) and
-	       IsCongruentForMorphisms( p, PreCompose(f, PreCompose(p, e)));
-    end );
-
-
-    AddIsEqualForObjects( karoubi_envelope,
-        function( obj_1, obj_2 )
-        return IsEqualForMorphisms( Idempotent(obj_1), Idempotent(obj_2) );
-    end );
-
-
-    AddIsEqualForMorphisms( karoubi_envelope,
-        function( morphism_1, morphism_2 )
-        return IsEqualForMorphisms( UnderlyingCell( morphism_1 ), UnderlyingCell( morphism_2 ) );
-    end );
-
-    AddIsCongruentForMorphisms( karoubi_envelope,
-        function (m1, m2)
-	return IsCongruentForMorphisms( UnderlyingCell(m1), UnderlyingCell(m2));
-    end);
+    if CurrentOperationWeight(category_weight_list, "DirectSum") < infinity then
+        AddDirectSum( karoubi_envelope,
+	    function (obj_list)
+	    return KaroubiObject(IdentityMorphism(DirectSum(List(obj_list, o -> UnderlyingObject(o)))));
+	end);
+    fi;
 
     Finalize( karoubi_envelope );
     return karoubi_envelope;
