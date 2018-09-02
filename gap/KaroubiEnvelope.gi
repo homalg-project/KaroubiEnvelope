@@ -207,12 +207,10 @@ InstallMethod( KaroubiEnvelope,
     category_weight_list := category!.derivations_weight_list;
 
     if CurrentOperationWeight(category_weight_list, "ZeroObject") < infinity then
-       zero_object := ZeroObject ( category );
-
-       structure_record.ZeroObject :=
-           function( underlying_zero_object )
-	   return [ ZeroMorphism( underlying_zero_object, underlying_zero_object ) ];
-      end;
+        AddZeroObject( karoubi_envelope,
+	    function ()
+	    return KaroubiObject(IdentityMorphism(ZeroObject(category)));
+	end);
     fi;
 
     if CurrentOperationWeight(category_weight_list, "KernelObject") < infinity then
