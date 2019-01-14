@@ -3,7 +3,7 @@
 ##                  KaroubiEnvelope package
 ##
 ##  Copyright 2018, Maxime Flin, Université Paris Diderot
-##  	      	    Daniel Juteau, Université Paris Diderot
+##                  Daniel Juteau, Université Paris Diderot
 ##
 ##
 #############################################################################
@@ -16,7 +16,7 @@ DeclareRepresentation( "IsKaroubiObjectRep",
 
 DeclareRepresentation( "IsKaroubiMorphismRep",
         IsCapCategoryMorphism and IsKaroubiMorphism and IsAttributeStoringRep,
-	[ ] );
+    [ ] );
 
 ####################################
 #
@@ -37,11 +37,11 @@ BindGlobal( "TheTypeOfKaroubiObjects",
 
 BindGlobal( "TheTypeOfKaroubiMorphisms",
         NewType( TheFamilyOfKaroubiMorphisms,
-		 IsKaroubiMorphismRep ) );
+         IsKaroubiMorphismRep ) );
 
 
 InstallMethod ( IsIdempotent,
-	        [ IsCapCategoryMorphism ],
+            [ IsCapCategoryMorphism ],
     function (f)
     return IsCongruentForMorphisms( PreCompose(f, f), f );
 end);
@@ -54,31 +54,31 @@ end);
 
 
 InstallMethod( Idempotent,
-	       [ IsKaroubiObject ],
+           [ IsKaroubiObject ],
     function ( obj )
          return ObjectAttributesAsList( obj )[1];
 end);
 
 InstallMethod( UnderlyingObject,
-	       [ IsKaroubiObject ],
+           [ IsKaroubiObject ],
     function ( obj )
         return UnderlyingCell( obj );
 end);
 
 InstallMethod( UnderlyingMorphism,
-	       [ IsKaroubiMorphism ],
+           [ IsKaroubiMorphism ],
     function ( obj )
         return UnderlyingCell( obj );
 end);
 
 # InstallMethod( UnderlyingCategory,
-# 	       [ IsKaroubiCategory ],
+#          [ IsKaroubiCategory ],
 #     function ( obj )
 #         return UnderlyingCell( obj );
 # end);
 
 InstallMethod( IsFullObject,
-	       [ IsKaroubiObject ],
+           [ IsKaroubiObject ],
     function ( obj )
         return Idempotent( obj ) = IdentityMorphism(UnderlyingObject(obj));
 end);
@@ -92,13 +92,13 @@ end);
 
 
 InstallMethod( UniversalSplitObject,
-	       [ IsKaroubiMorphism ],
+           [ IsKaroubiMorphism ],
     function ( obj )
         return KaroubiObject( UnderlyingMorphism( obj ) );
 end);
 
 InstallMethod( UniversalMorphismIntoSplit,
-	       [ IsKaroubiMorphism ],
+           [ IsKaroubiMorphism ],
     function (f)
     local e, r;
     e := Idempotent(Source(f));
@@ -107,7 +107,7 @@ InstallMethod( UniversalMorphismIntoSplit,
 end);
 
 InstallMethod( UniversalMorphismFromSplit,
-	       [ IsKaroubiMorphism ],
+           [ IsKaroubiMorphism ],
     function (f)
     local e, r;
     e := Idempotent(Source(f));
@@ -123,10 +123,10 @@ end);
 
 InstallMethod( KaroubiEnvelope,
                [ IsCapCategory ],
-               
+
   function( category )
     local karoubi_envelope, category_weight_list, structure_record, zero_object, triple, mor_const, obj_const;
-    
+
     if not IsFinalized( category ) then
         Error( "category must be finalized" );
         return;
@@ -148,38 +148,38 @@ InstallMethod( KaroubiEnvelope,
 
     ##
     InstallMethod( KaroubiObject,
-    		   [ IsCapCategoryMorphism ],
+               [ IsCapCategoryMorphism ],
         function (idempotent)
-	return obj_const(Source(idempotent), [idempotent]);
+    return obj_const(Source(idempotent), [idempotent]);
     end);
 
     InstallMethod( KaroubiMorphism,
-    		   [ IsCapCategoryObject, IsCapCategoryMorphism, IsCapCategoryObject ],
+               [ IsCapCategoryObject, IsCapCategoryMorphism, IsCapCategoryObject ],
         function (a, f, b)
-	return mor_const(a, f, b);
+    return mor_const(a, f, b);
     end);
 
     ##
     AddIsWellDefinedForObjects( karoubi_envelope,
         function( object )
-	local idem;
-	idem := Idempotent(object);
-        
+    local idem;
+    idem := Idempotent(object);
+
         return IsWellDefinedForObjects( UnderlyingCell(object) ) and
-	       IsWellDefinedForMorphisms( idem ) and
-	       IsIdempotent( idem );
-        
+           IsWellDefinedForMorphisms( idem ) and
+           IsIdempotent( idem );
+
     end );
 
     AddIsWellDefinedForMorphisms( karoubi_envelope,
         function( mor )
-	local e, f, p;
-	e := Idempotent(Source(mor));
-	f := Idempotent(Range(mor));
-	p := UnderlyingCell(mor);
-        
+    local e, f, p;
+    e := Idempotent(Source(mor));
+    f := Idempotent(Range(mor));
+    p := UnderlyingCell(mor);
+
         return IsWellDefinedForMorphisms( UnderlyingCell(mor) ) and
-	       IsCongruentForMorphisms( p, PreCompose(f, PreCompose(p, e)));
+           IsCongruentForMorphisms( p, PreCompose(f, PreCompose(p, e)));
     end );
 
     ##
@@ -195,58 +195,74 @@ InstallMethod( KaroubiEnvelope,
 
     AddIsCongruentForMorphisms( karoubi_envelope,
         function (m1, m2)
-	return IsCongruentForMorphisms( UnderlyingCell(m1), UnderlyingCell(m2));
+        return IsCongruentForMorphisms( UnderlyingCell(m1), UnderlyingCell(m2));
     end);
 
     ##
     AddIdentityMorphism( karoubi_envelope,
         function (obj)
-	return KaroubiMorphism(obj, Idempotent(obj), obj);
+        return KaroubiMorphism(obj, Idempotent(obj), obj);
+    end);
+
+    AddIsIsomorphism( karoubi_envelope,
+        function (morph)
+        return IsIsomorphism(UnderlyingMorphism(morph));
     end);
 
     category_weight_list := category!.derivations_weight_list;
 
     if CurrentOperationWeight(category_weight_list, "ZeroObject") < infinity then
         AddZeroObject( karoubi_envelope,
-	    function ()
-	    return KaroubiObject(IdentityMorphism(ZeroObject(category)));
-	end);
+        function ()
+        return KaroubiObject(IdentityMorphism(ZeroObject(category)));
+    end);
     fi;
 
     if CurrentOperationWeight(category_weight_list, "KernelObject") < infinity then
         AddKernelEmbedding( karoubi_envelope,
-	    function (mor)
-	    local e, ker, f, h;
-	    f := UnderlyingMorphism(mor);
-	    h := KernelEmbedding(f);
-	    ker := KaroubiObject(IdentityMorphism(KernelObject(f)));
-	    e := Idempotent(Source(mor));
-	    return KaroubiMorphism(ker, PreCompose(h, e), Source(mor));
-	end);
-
+        function (mor)
+        local e, ker, f, h;
+        f := UnderlyingMorphism(mor);
+        h := KernelEmbedding(f);
+        ker := KaroubiObject(IdentityMorphism(KernelObject(f)));
+        e := Idempotent(Source(mor));
+        return KaroubiMorphism(ker, PreCompose(h, e), Source(mor));
+    end);
 
         AddKernelLift( karoubi_envelope,
-	    function (mor, tmor)
-	    local e, q, f, k, ker, phi;
-	    phi := UnderlyingMorphism(mor);
-	    f := UnderlyingMorphism(tmor);
-	    e := Idempotent(Source(mor));
-	    q := Idempotent(Source(tmor));
-	    k := KernelEmbedding(phi);
-	    ker := KaroubiObject(IdentityMorphism(Source(k)));
-	    return KaroubiMorphism(Source(tmor), PreCompose(k, q), ker);
-	end);
+        function (mor, tmor)
+        local e, q, f, k, ker, phi;
+        phi := UnderlyingMorphism(mor);
+        f := UnderlyingMorphism(tmor);
+        e := Idempotent(Source(mor));
+        q := Idempotent(Source(tmor));
+        k := KernelEmbedding(phi);
+        ker := KaroubiObject(IdentityMorphism(Source(k)));
+        return KaroubiMorphism(Source(tmor), PreCompose(k, q), ker);
+    end);
     fi;
 
     if CurrentOperationWeight(category_weight_list, "DirectSum") < infinity then
         AddDirectSum( karoubi_envelope,
-	    function (obj_list)
-	    return KaroubiObject(IdentityMorphism(DirectSum(List(obj_list, o -> UnderlyingObject(o)))));
-	end);
+        function (obj_list)
+        return KaroubiObject(IdentityMorphism(DirectSum(List(obj_list, o -> UnderlyingObject(o)))));
+    end);
+    fi;
+
+    if CurrentOperationWeight(category_weight_list, "TensorProductOnObjects") < infinity then
+        AddTensorProductOnObjects( karoubi_envelope,
+        function (a, b)
+        return KaroubiObject(IdentityMorphism(TensorProductOnObjects(a, b)));
+    end);
+    fi;
+
+    if CurrentOperationWeight(category_weight_list, "TensorUnit") < infinity then
+        AddTensorUnit( karoubi_envelope,
+        function ()
+            KaroubiObject(IdentityMorphism(TensorUnit(category)));
+        end);
     fi;
 
     Finalize( karoubi_envelope );
     return karoubi_envelope;
 end );
-
-
