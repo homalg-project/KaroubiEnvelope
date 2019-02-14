@@ -252,7 +252,7 @@ InstallMethod( KaroubiEnvelope,
     if CurrentOperationWeight(category_weight_list, "TensorProductOnObjects") < infinity then
         AddTensorProductOnObjects( karoubi_envelope,
         function (a, b)
-        return KaroubiObject(IdentityMorphism(TensorProductOnObjects(a, b)));
+        return KaroubiObject(TensorProductOnMorphisms(a, b));
     end);
     fi;
 
