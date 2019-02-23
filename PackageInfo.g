@@ -5,8 +5,9 @@ PackageName := "KaroubiEnvelope",
 Subtitle := "Karoubi Envelope for CAP",
 
 Version := Maximum( [
-                   "2018.08.30"
+                   "2018.08.30",
                    ## this line prevents merge conflicts
+                   "2018.09.01",
                    ] ),
 
 # this avoids git-merge conflicts

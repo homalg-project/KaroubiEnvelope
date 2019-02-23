@@ -43,10 +43,9 @@ DeclareCategory( "IsKaroubiMorphism",
 #! The output is its underlying object in the original category.
 #! @Returns an object in $\mathbf{A}$
 #! @Arguments a
-DeclareAttribute( "UnderlyingObject",
-                  IsKaroubiObject );
+DeclareOperation( "UnderlyingObject",
+                  [ IsKaroubiObject ] );
 		  
-
 #! @Description
 #! The argument is an object $a$ in the Karoubi envelope of a category.
 #! The output is the idempotent of the underlying object
