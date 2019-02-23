@@ -61,15 +61,11 @@ end);
 
 InstallMethod( UnderlyingObject,
 	       [ IsKaroubiObject ],
-    function ( obj )
-        return UnderlyingCell( obj );
-end);
+  UnderlyingCell );
 
 InstallMethod( UnderlyingMorphism,
 	       [ IsKaroubiMorphism ],
-    function ( obj )
-        return UnderlyingCell( obj );
-end);
+  UnderlyingCell );
 
 # InstallMethod( UnderlyingCategory,
 # 	       [ IsKaroubiCategory ],
