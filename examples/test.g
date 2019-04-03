@@ -24,6 +24,7 @@ iA := KaroubiObject(IdentityMorphism(V));
 eA := KaroubiObject(e);
 fA := KaroubiObject(f);
 phi := KaroubiMorphism(eA, PreCompose(f, e), fA);
+Display(DirectSum(eA, fA))
 
 a := ListPrimitivelyInstalledOperationsOfCategory( CapCategory( V ) );;
 b := ListInstalledOperationsOfCategory( CapCategory( phi ) );;
