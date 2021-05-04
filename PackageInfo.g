@@ -45,7 +45,6 @@ PackageDoc := rec(
   PDFFile   := "doc/manual.pdf",
   SixFile   := "doc/manual.six",
   LongTitle := "Karoubi Envelope for CAP",
-  Autoload  := false
 ),
 
 Dependencies := rec(
@@ -59,11 +58,7 @@ Dependencies := rec(
   ExternalConditions := [ ]
 ),
 
-AvailabilityTest := function( )
-    return true;
-  end,
-
-Autoload := false,
+AvailabilityTest := ReturnTrue,
 
 Keywords := [ "categories", "Karoubi envelope" ]
 
